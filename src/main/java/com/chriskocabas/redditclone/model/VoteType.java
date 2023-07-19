@@ -1,6 +1,6 @@
 package com.chriskocabas.redditclone.model;
 
-import com.chriskocabas.redditclone.Exceptions.NoVoteFoundException;
+import com.chriskocabas.redditclone.Exceptions.CustomException;
 
 import java.util.Arrays;
 
@@ -17,7 +17,7 @@ public enum VoteType {
         return Arrays.stream(VoteType.values())
                 .filter(value -> value.getDirection().equals(direction))
                 .findAny()
-                .orElseThrow(() -> new NoVoteFoundException("Vote not found"));
+                .orElseThrow(() -> new CustomException("Vote not found"));
     }
 
     public Integer getDirection() {
