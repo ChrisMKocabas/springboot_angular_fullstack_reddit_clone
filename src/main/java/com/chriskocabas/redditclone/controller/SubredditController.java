@@ -40,17 +40,5 @@ public class SubredditController {
                 .body(subredditService.getSubreddit(id));
     }
 
-    @RestController
-    @RequestMapping("/api/votes")
-    @AllArgsConstructor
-    public static class VoteController {
 
-        private final VoteService voteService;
-
-        @PostMapping
-        public ResponseEntity<Void> vote(@RequestBody VoteDto voteDto) {
-            voteService.vote(voteDto);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }
 }

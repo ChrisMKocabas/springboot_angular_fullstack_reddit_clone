@@ -1,6 +1,7 @@
 ### Credentials
 /src/main/resources/env.properties
-
+/src/main/resources/jwtprivate.key
+/src/main/resources/public.key
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 

@@ -1,0 +1,32 @@
+
+spring:
+  config:
+    import: "env.properties"
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect : org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+  mail:
+    host: smtp.titan.email
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    protocol: smtp
+
+jwt:
+  expiration:
+    time: 900000
+  public:
+    key: classpath:public.key
+  private:
+    key: classpath:jwtprivate.key
+
+server:
+  port: 8080
