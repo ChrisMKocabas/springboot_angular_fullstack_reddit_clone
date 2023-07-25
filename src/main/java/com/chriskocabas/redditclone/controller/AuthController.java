@@ -7,6 +7,7 @@ import com.chriskocabas.redditclone.dto.RegisterRequest;
 import com.chriskocabas.redditclone.service.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.HttpStatus.OK;
@@ -23,18 +24,19 @@ public class AuthController {
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
         authService.signUp(registerRequest);
         return new ResponseEntity<>("User Registration Successful",
-                OK);
+                HttpStatus.OK);
     }
 
     @GetMapping("accountVerification/{token}")
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
         authService.verifyAccount(token);
-        return new ResponseEntity<>("Account Activated Successfully", OK);
+        return new ResponseEntity<>("Account Activated Successfully", HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
-        return authService.login(loginRequest);
+    public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
+        authService.login(loginRequest);
+        return new ResponseEntity<>("Authentication Successful", HttpStatus.OK);
     }
 
     @PostMapping("/refresh/token")
