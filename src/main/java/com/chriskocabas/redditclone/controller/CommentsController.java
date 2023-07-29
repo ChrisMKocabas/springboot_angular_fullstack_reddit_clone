@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/api/v1/comments")
 @AllArgsConstructor
 public class CommentsController {
     private final CommentService commentService;
@@ -33,6 +33,11 @@ public class CommentsController {
     public ResponseEntity<List<CommentsDto>> getAllCommentsForUser(@RequestParam String userName){
         return ResponseEntity.status(OK)
                 .body(commentService.getAllCommentsForUser(userName));
+    }
+
+    @GetMapping("/sayhello")
+    public ResponseEntity<String> sayHello(){
+        return ResponseEntity.ok("Hello from secure endpoint");
     }
 
 }

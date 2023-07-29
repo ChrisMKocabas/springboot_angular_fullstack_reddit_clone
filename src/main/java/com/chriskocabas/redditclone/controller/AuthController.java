@@ -1,5 +1,6 @@
 package com.chriskocabas.redditclone.controller;
 
+import com.chriskocabas.redditclone.Exceptions.ValidationExceptions;
 import com.chriskocabas.redditclone.dto.AuthenticationResponse;
 import com.chriskocabas.redditclone.dto.LoginRequest;
 import com.chriskocabas.redditclone.dto.RefreshTokenRequest;
@@ -9,20 +10,32 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.HttpStatus.OK;
 import com.chriskocabas.redditclone.service.AuthService;
+
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @AllArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
-        authService.signUp(registerRequest);
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest registerRequest,BindingResult bindingResult) {
+
+        //check for validation errors
+        Optional <String> validationErrors = ValidationExceptions.processValidationErrors(bindingResult);
+        if (validationErrors.isPresent()){
+            return new ResponseEntity<>(validationErrors.get(), HttpStatus.BAD_REQUEST);
+
+        }
+
+        authService.register(registerRequest);
         return new ResponseEntity<>("User Registration Successful",
                 HttpStatus.OK);
     }
@@ -34,9 +47,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
-        authService.login(loginRequest);
-        return new ResponseEntity<>("Authentication Successful", HttpStatus.OK);
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+
+        return authService.login(loginRequest);
+
     }
 
     @PostMapping("/refresh/token")

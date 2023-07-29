@@ -6,9 +6,11 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    hikari:
+      max-lifetime: 20000
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         dialect : org.hibernate.dialect.MySQL8Dialect
@@ -30,3 +32,7 @@ jwt:
 
 server:
   port: 8080
+
+logging:
+  level:
+    com.chriskocabas.redditclone.service: INFO

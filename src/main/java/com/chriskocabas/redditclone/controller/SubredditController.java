@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subreddit")
+@RequestMapping("/api/v1/subreddit")
 @AllArgsConstructor
 @Slf4j
 public class SubredditController {
