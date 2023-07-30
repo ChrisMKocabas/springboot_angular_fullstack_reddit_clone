@@ -1,14 +1,18 @@
 package com.chriskocabas.redditclone.controller;
 
+import com.chriskocabas.redditclone.Exceptions.ValidationExceptions;
 import com.chriskocabas.redditclone.dto.PostRequest;
 import com.chriskocabas.redditclone.dto.PostResponse;
 import com.chriskocabas.redditclone.service.PostService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.ResponseEntity.status;
 
@@ -20,9 +24,19 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<Void> createPost(@RequestBody PostRequest postRequest) {
-        postService.save(postRequest);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<PostResponse> createPost(@Valid  @RequestBody PostRequest postRequest, BindingResult bindingResult) {
+
+        //check for validation errors
+        Optional<String> validationErrors = ValidationExceptions.processValidationErrors(bindingResult);
+        if (validationErrors.isPresent()) {
+            System.out.print(validationErrors.get());
+        }
+            return status(HttpStatus.CREATED).body(postService.save(postRequest));
+    }
+
+    @PostMapping("/toggle-notifications/{id}")
+    public ResponseEntity<Boolean>toggleNotifications(@PathVariable Long id){
+        return status(HttpStatus.OK).body(postService.toggleNotificationStatus(id));
     }
 
     @GetMapping
@@ -35,13 +49,14 @@ public class PostController {
         return status(HttpStatus.OK).body(postService.getPost(id));
     }
 
-    @GetMapping(params = "subredditId")
-    public ResponseEntity<List<PostResponse>> getPostsBySubreddit(@RequestParam Long subredditId) {
+    @GetMapping("/subreddit-id/{subredditId}")
+    public ResponseEntity<List<PostResponse>> getPostsBySubreddit(@PathVariable Long subredditId) {
         return status(HttpStatus.OK).body(postService.getPostsBySubreddit(subredditId));
     }
 
-    @GetMapping(params = "username")
-    public ResponseEntity<List<PostResponse>> getPostsByUsername(@RequestParam String username) {
+    @GetMapping("/user/{username}")
+    public ResponseEntity<List<PostResponse>> getPostsByUsername(@PathVariable String username) {
         return status(HttpStatus.OK).body(postService.getPostsByUsername(username));
     }
+
 }

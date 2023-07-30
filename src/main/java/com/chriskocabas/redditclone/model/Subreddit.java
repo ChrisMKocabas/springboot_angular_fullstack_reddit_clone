@@ -1,6 +1,7 @@
 package com.chriskocabas.redditclone.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,9 @@ public class Subreddit {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+    @NotBlank(message = "Community/Subreddit name is required")
     private String name;
+    @NotBlank(message = "Description is required")
     private String description;
     @OneToMany(fetch = LAZY)
     private List<Post> posts;

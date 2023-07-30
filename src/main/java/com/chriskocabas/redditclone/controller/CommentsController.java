@@ -3,6 +3,7 @@ package com.chriskocabas.redditclone.controller;
 import com.chriskocabas.redditclone.dto.CommentsDto;
 import com.chriskocabas.redditclone.service.CommentService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,21 +24,16 @@ public class CommentsController {
         return new ResponseEntity<>(CREATED);
     }
 
-    @GetMapping(params = "postId")
-    public ResponseEntity<List<CommentsDto>> getAllCommentsForPost(@RequestParam Long postId) {
+    @GetMapping("/post-id/{postId}")
+    public ResponseEntity<List<CommentsDto>> getAllCommentsForPost(@PathVariable Long postId) {
         return ResponseEntity.status(OK)
                 .body(commentService.getAllCommentsForPost(postId));
     }
 
-    @GetMapping(params = "userName")
-    public ResponseEntity<List<CommentsDto>> getAllCommentsForUser(@RequestParam String userName){
+    @GetMapping("/username/{userName}")
+    public ResponseEntity<List<CommentsDto>> getAllCommentsForUser(@PathVariable String userName){
         return ResponseEntity.status(OK)
                 .body(commentService.getAllCommentsForUser(userName));
-    }
-
-    @GetMapping("/sayhello")
-    public ResponseEntity<String> sayHello(){
-        return ResponseEntity.ok("Hello from secure endpoint");
     }
 
 }

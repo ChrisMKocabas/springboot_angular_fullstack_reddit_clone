@@ -32,6 +32,7 @@ public abstract class PostMapper {
     @Mapping(target = "subreddit", source = "subreddit")
     @Mapping(target = "voteCount", constant = "0")
     @Mapping(target = "user", source = "user")
+    @Mapping(target = "notificationStatus", constant= "true")
     public abstract Post map(PostRequest postRequest, Subreddit subreddit, User user);
 
     @Mapping(target = "id", source = "postId")
@@ -41,6 +42,7 @@ public abstract class PostMapper {
     @Mapping(target = "duration", expression = "java(getDuration(post))")
     @Mapping(target = "upVote", expression = "java(isPostUpVoted(post))")
     @Mapping(target = "downVote", expression = "java(isPostDownVoted(post))")
+    @Mapping(target = "notificationStatus", source= "notificationStatus")
     public abstract PostResponse mapToDto(Post post);
 
     Integer commentCount(Post post) {
