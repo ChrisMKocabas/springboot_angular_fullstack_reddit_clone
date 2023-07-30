@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.function.Function;
@@ -35,6 +36,19 @@ public class JwtService {
                 .expiresAt(Instant.now().plusMillis(jwtExpirationInMillis))
                 .subject(username)
                 .claim("scope", Role.USER)
+                .build();
+
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String generateRefreshToken(String username) {
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .subject(username)
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plus(Duration.ofDays(1)))
+                .claim("scope", Role.USER)
+                .claim("refresh", "true")
                 .build();
 
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

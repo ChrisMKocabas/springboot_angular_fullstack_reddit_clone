@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.status;
 
 @RestController
@@ -57,6 +58,30 @@ public class PostController {
     @GetMapping("/user/{username}")
     public ResponseEntity<List<PostResponse>> getPostsByUsername(@PathVariable String username) {
         return status(HttpStatus.OK).body(postService.getPostsByUsername(username));
+    }
+
+    @PutMapping
+    public ResponseEntity<PostResponse> UpdatePost(@Valid  @RequestBody PostRequest postRequest, BindingResult bindingResult) {
+
+        //check for validation errors
+        Optional<String> validationErrors = ValidationExceptions.processValidationErrors(bindingResult);
+        if (validationErrors.isPresent()) {
+            System.out.print(validationErrors.get());
+        }
+
+        return status(HttpStatus.CREATED).body(postService.update(postRequest));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deletePost(@Valid @RequestBody PostRequest postRequest, BindingResult bindingResult) {
+        //check for validation errors
+        Optional<String> validationErrors = ValidationExceptions.processValidationErrors(bindingResult);
+        if (validationErrors.isPresent()) {
+            System.out.print(validationErrors.get());
+        }
+
+        postService.delete(postRequest);
+        return new ResponseEntity<>(OK);
     }
 
 }

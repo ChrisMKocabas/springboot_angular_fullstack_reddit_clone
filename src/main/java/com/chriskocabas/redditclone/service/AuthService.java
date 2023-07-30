@@ -21,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.sql.Ref;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class AuthService {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
@@ -84,29 +86,12 @@ public class AuthService {
     }
 
     @Transactional
-    public String generateRefreshToken(Authentication authentication) {
-        String token = jwtService.generateToken(authentication);
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setToken(token);
-        Instant expiryDate = Instant.now().plus(Duration.ofDays(1));
-        refreshToken.setExpirationDate(expiryDate);
-        Instant createdDate = Instant.now();
-        refreshToken.setCreatedDate(createdDate);
-
-        User user = getCurrentUser();
-        refreshToken.setUser(user);
-
-        refreshTokenRepository.save(refreshToken);
-        return token;
-    }
-
-    @Transactional
     public void verifyAccount(String token) {
 
         Optional<VerificationToken> verificationTokenOptional = verificationTokenRepository.findByToken(token);
         verificationTokenOptional.orElseThrow(()-> new CustomException("Invalid Token"));
         enableUser(verificationTokenOptional.get());
-
+        verificationTokenRepository.deleteVerificationTokenByToken(verificationTokenOptional.get().getToken());
     }
 
     @Transactional
@@ -122,12 +107,16 @@ public class AuthService {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                     loginRequest.getPassword()));
-
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String authenticationToken = jwtService.generateToken(authentication);
-            String refreshToken = generateRefreshToken(authentication);
-            return new AuthenticationResponse(authenticationToken, getCurrentUser().getUsername());
+            String refreshToken = refreshTokenService.generateRefreshToken(authentication.getName()).getToken();
+//            return new AuthenticationResponse(authenticationToken, getCurrentUser().getUsername());
+            return AuthenticationResponse.builder()
+                    .authenticationToken(authenticationToken)
+                    .refreshToken(refreshToken)
+                    .expirationDate(Instant.now().plusMillis(jwtService.getJwtExpirationInMillis()))
+                    .username(getCurrentUser().getUsername())
+                    .build();
         } catch (Exception e) {
             logger.error("Error during login: {}", e.getMessage());
             throw e; // Rethrow the exception to propagate it to the controller or handle it appropriately.
@@ -136,8 +125,16 @@ public class AuthService {
 
 
     public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-
-        return new AuthenticationResponse();
+        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+        String newAuthToken = jwtService.generateTokenWithUserName(refreshTokenRequest.getUsername());
+        String refreshToken = refreshTokenService.generateRefreshToken(refreshTokenRequest.getUsername()).getToken();
+        refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
+        return AuthenticationResponse.builder()
+                .authenticationToken(newAuthToken)
+                .refreshToken(refreshToken)
+                .expirationDate(Instant.now().plusMillis(jwtService.getJwtExpirationInMillis()))
+                .username(refreshTokenRequest.getUsername())
+                .build();
     }
 
     public boolean isLoggedIn() {

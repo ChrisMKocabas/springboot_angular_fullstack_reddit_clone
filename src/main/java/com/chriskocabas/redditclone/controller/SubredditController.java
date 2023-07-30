@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
 @RequestMapping("/api/v1/subreddit")
 @AllArgsConstructor
@@ -40,5 +42,16 @@ public class SubredditController {
                 .body(subredditService.getSubreddit(id));
     }
 
+    @PutMapping
+    public ResponseEntity<SubredditDto> updateSubreddit(@RequestBody SubredditDto subredditDto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(subredditService.update(subredditDto));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteSubreddit(@RequestBody SubredditDto subredditDto) {
+        subredditService.delete(subredditDto);
+        return new ResponseEntity<>(OK);
+    }
 
 }

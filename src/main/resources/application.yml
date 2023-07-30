@@ -24,7 +24,7 @@ spring:
 
 jwt:
   expiration:
-    time: 90000
+    time: 900000
   public:
     key: classpath:public.key
   private:

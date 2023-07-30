@@ -36,4 +36,16 @@ public class CommentsController {
                 .body(commentService.getAllCommentsForUser(userName));
     }
 
+    @PutMapping()
+    public ResponseEntity<Void> updateComment(@RequestBody CommentsDto commentsDto) {
+        commentService.update(commentsDto);
+        return new ResponseEntity<>(OK);
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteComment(@RequestBody CommentsDto commentsDto) {
+        commentService.delete(commentsDto);
+        return new ResponseEntity<>(OK);
+    }
+
 }

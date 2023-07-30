@@ -1,5 +1,6 @@
 package com.chriskocabas.redditclone.controller;
 
+import com.chriskocabas.redditclone.Exceptions.CustomException;
 import com.chriskocabas.redditclone.dto.VoteDto;
 import com.chriskocabas.redditclone.service.VoteService;
 import lombok.AllArgsConstructor;
@@ -18,8 +19,12 @@ public class VoteController {
     private final VoteService voteService;
 
     @PostMapping
-    public ResponseEntity<Void> vote(@RequestBody VoteDto voteDto) {
+    public ResponseEntity<String> vote(@RequestBody VoteDto voteDto) {
+        try {
         voteService.vote(voteDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (CustomException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
 }

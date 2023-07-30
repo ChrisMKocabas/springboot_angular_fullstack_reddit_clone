@@ -4,9 +4,8 @@ import com.chriskocabas.redditclone.Exceptions.CustomException;
 import com.chriskocabas.redditclone.dto.PostRequest;
 import com.chriskocabas.redditclone.dto.PostResponse;
 import com.chriskocabas.redditclone.mapper.PostMapper;
-import com.chriskocabas.redditclone.model.Post;
-import com.chriskocabas.redditclone.model.Subreddit;
-import com.chriskocabas.redditclone.model.User;
+import com.chriskocabas.redditclone.model.*;
+import com.chriskocabas.redditclone.repository.ICommentRepository;
 import com.chriskocabas.redditclone.repository.IPostRepository;
 import com.chriskocabas.redditclone.repository.ISubredditRepository;
 import com.chriskocabas.redditclone.repository.IUserRepository;
@@ -28,6 +27,7 @@ public class PostService {
     private final PostMapper postMapper;
     private final IPostRepository postRepository;
     private final IUserRepository userRepository;
+    private final ICommentRepository commentRepository;
     @Transactional
     public PostResponse save(PostRequest postRequest) {
         Subreddit subreddit = subredditRepository.findByName(postRequest.getSubredditName())
@@ -98,5 +98,56 @@ public class PostService {
         postRepository.save(post);
 
         return post.getNotificationStatus();
+    }
+    @Transactional
+    public PostResponse update(PostRequest postRequest) {
+        User user = authService.getCurrentUser();
+
+        if (user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.MODERATOR)) {
+            Post post = postRepository.findById(postRequest.getPostId()).orElseThrow(
+                    ()->new CustomException("Post doesn't exist!"));
+            post.setPostName(postRequest.getPostName());
+            post.setDescription(postRequest.getDescription());
+            postRepository.save(post);
+            return postMapper.mapToDto(postRepository.save(post));
+        }
+
+        Post post = postRepository.findById(postRequest.getPostId())
+                .orElseThrow(()-> new CustomException("No posts found with post id: "+ postRequest.getPostId()));
+
+        if (!post.getUser().equals(user)){
+            throw new CustomException("Post doesn't exist or insufficient privileges!");
+        }
+
+        post.setPostName(postRequest.getPostName());
+        post.setDescription(postRequest.getDescription());
+        return postMapper.mapToDto(postRepository.save(post));
+    }
+    @Transactional
+    public void delete(PostRequest postRequest) {
+        User user = authService.getCurrentUser();
+
+        if (user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.MODERATOR)) {
+            Post post = postRepository.findById(postRequest.getPostId()).orElseThrow(
+                    ()->new CustomException("Post doesn't exist!"));
+
+            commentRepository.deleteAllByPost(post);
+            postRepository.delete(post);
+        }
+
+        Post post = postRepository.findById(postRequest.getPostId())
+                .orElseThrow(()-> new CustomException("No posts found with post id: "+ postRequest.getPostId()));
+
+        if (!post.getUser().equals(user)){
+            throw new CustomException("Post doesn't exist or insufficient privileges!");
+        }
+
+        if (commentRepository.findByPost(post).size()>0){
+            post.setPostName("Deleted by owner");
+            post.setDescription("");
+        } else {
+            postRepository.delete(post);
+        }
+
     }
 }

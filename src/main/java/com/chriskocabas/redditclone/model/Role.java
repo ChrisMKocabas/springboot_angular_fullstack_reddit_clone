@@ -2,5 +2,7 @@ package com.chriskocabas.redditclone.model;
 
 public enum Role {
     USER,
-    ADMIN
+    ADMIN,
+
+    MODERATOR
 }
