@@ -1,9 +1,7 @@
 package com.chriskocabas.redditclone.controller;
 
 import com.chriskocabas.redditclone.dto.SubredditDto;
-import com.chriskocabas.redditclone.dto.VoteDto;
 import com.chriskocabas.redditclone.service.SubredditService;
-import com.chriskocabas.redditclone.service.VoteService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

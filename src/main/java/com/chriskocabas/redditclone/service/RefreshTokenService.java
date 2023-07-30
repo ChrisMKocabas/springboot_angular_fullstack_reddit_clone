@@ -7,10 +7,7 @@ import com.chriskocabas.redditclone.repository.IUserRepository;
 import com.chriskocabas.redditclone.security.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
 import com.chriskocabas.redditclone.model.User;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -34,9 +31,7 @@ public class RefreshTokenService {
         Instant createdDate = Instant.now();
         refreshToken.setCreatedDate(createdDate);
 
-        User user = userRepository.findByUsername(username).orElseThrow(()->{
-            throw new CustomException("No user found with username to generate refresh token");
-        });
+        User user = userRepository.findByUsername(username).orElseThrow(()-> new CustomException("No user found with username to generate refresh token"));
         refreshToken.setUser(user);
 
         refreshTokenRepository.save(refreshToken);

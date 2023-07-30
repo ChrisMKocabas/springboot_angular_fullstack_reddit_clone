@@ -3,7 +3,6 @@ package com.chriskocabas.redditclone.controller;
 import com.chriskocabas.redditclone.dto.CommentsDto;
 import com.chriskocabas.redditclone.service.CommentService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
