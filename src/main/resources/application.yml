@@ -36,3 +36,4 @@ server:
 logging:
   level:
     com.chriskocabas.redditclone.service: INFO
+

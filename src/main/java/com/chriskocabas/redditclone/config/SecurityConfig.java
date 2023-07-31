@@ -35,12 +35,17 @@ public class SecurityConfig{
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/posts/**")
                         .permitAll()
-                        .requestMatchers("/v1/api-docs",
-                                "/configuration/ui",
-                                "/swagger-resources/**",
-                                "/configuration/security",
-                                "/swagger-ui.html",
-                                "/webjars/**")
+//                        .requestMatchers("/v1/api-docs",
+//                                "/configuration/ui",
+//                                "/swagger-resources/**",
+//                                "/configuration/security",
+//                                "/swagger-ui.html",
+//                                "/webjars/**")
+//                        .permitAll()
+                        .requestMatchers(
+                                "/v3/**",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
