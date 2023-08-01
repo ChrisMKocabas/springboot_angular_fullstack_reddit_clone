@@ -18,5 +18,6 @@ public interface CommentMapper {
 
     @Mapping(target = "postId", expression = "java(comment.getPost().getPostId())")
     @Mapping(target = "userName", expression = "java(comment.getUser().getUsername())")
+    @Mapping(target = "duration", expression = "java(com.github.marlonlom.utilities.timeago.TimeAgo.using(comment.getCreatedDate().toEpochMilli()))")
     CommentsDto mapToDto(Comment comment);
 }

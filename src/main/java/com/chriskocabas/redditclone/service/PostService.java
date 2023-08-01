@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,9 +34,11 @@ public class PostService {
         Subreddit subreddit = subredditRepository.findByName(postRequest.getSubredditName())
                 .orElseThrow(()->new CustomException("Subreddit not found: "+postRequest.getSubredditName()));
         User user = authService.getCurrentUser();
-
         Post savedPost = postRepository.save(postMapper.map(postRequest,subreddit,user));
-
+        String POST_URL = ServletUriComponentsBuilder.fromCurrentContextPath().path(
+                "/api/v1/posts/"+savedPost.getPostId()).toUriString();
+        savedPost.setUrl(POST_URL);
+        postRepository.save(savedPost);
         return postMapper.mapToDto(savedPost);
     }
 
@@ -90,14 +93,14 @@ public class PostService {
     }
 
     @Transactional
-    public boolean toggleNotificationStatus(Long id) {
+    public boolean toggleNotificationStatus(Long id, boolean newStatus) {
         Post post = postRepository.findById(id).orElseThrow(
                 ()-> new CustomException("Post with the following id not found " + id)
         );
-        post.setNotificationStatus(!post.getNotificationStatus());
+        post.setNotificationStatus(newStatus);
         postRepository.save(post);
 
-        return post.getNotificationStatus();
+        return newStatus;
     }
     @Transactional
     public PostResponse update(PostRequest postRequest) {

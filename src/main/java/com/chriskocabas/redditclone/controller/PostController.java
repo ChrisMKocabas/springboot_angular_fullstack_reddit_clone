@@ -35,9 +35,9 @@ public class PostController {
             return status(HttpStatus.CREATED).body(postService.save(postRequest));
     }
 
-    @PostMapping("/toggle-notifications/{id}")
-    public ResponseEntity<Boolean>toggleNotifications(@PathVariable Long id){
-        return status(HttpStatus.OK).body(postService.toggleNotificationStatus(id));
+    @PutMapping("/toggle-notifications/{id}")
+    public ResponseEntity<Boolean>toggleNotifications(@PathVariable Long id, @RequestBody boolean newStatus){
+        return status(HttpStatus.OK).body(postService.toggleNotificationStatus(id, newStatus));
     }
 
     @GetMapping

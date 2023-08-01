@@ -54,6 +54,7 @@ public class AuthController {
 
     @PostMapping("/refresh/token")
     public AuthenticationResponse refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        System.out.println("Refresh token triggered" + refreshTokenRequest);
         return authService.refreshToken(refreshTokenRequest);
     }
 
