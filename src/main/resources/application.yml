@@ -10,7 +10,7 @@ spring:
       max-lifetime: 20000
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect : org.hibernate.dialect.MySQL8Dialect
@@ -32,6 +32,7 @@ jwt:
 
 server:
   port: 8080
+  address: 0.0.0.0
 
 logging:
   level:

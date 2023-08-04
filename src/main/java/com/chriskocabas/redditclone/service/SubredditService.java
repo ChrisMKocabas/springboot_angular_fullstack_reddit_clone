@@ -48,18 +48,18 @@ public class SubredditService {
                 .map(subredditMapper::mapSubredditToDto)
                 .collect(toList());
         return allSubreddits;
-
     }
 
 
     @Transactional
     public SubredditDto getSubreddit(Long id) {
+        System.out.print("get subreddit called "+ id);
         Subreddit subreddit= subredditRepository.findById(id).orElseThrow(
                 ()->new CustomException("No subreddit found with given ID."));
-
         return subredditMapper.mapSubredditToDto(subreddit);
-
     }
+
+
     @Transactional
     public SubredditDto update(SubredditDto subredditDto) {
 

@@ -25,3 +25,4 @@ public class VerificationToken {
     private User user;
     private Instant expiryDate;
 }
+//

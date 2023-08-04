@@ -29,7 +29,7 @@ public class SecurityConfig{
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/auth/**")
                         .permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/subreddit")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/subreddit/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/posts/")
                         .permitAll()
