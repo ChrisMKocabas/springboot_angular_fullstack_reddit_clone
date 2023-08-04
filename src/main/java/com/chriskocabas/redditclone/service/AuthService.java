@@ -12,6 +12,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -102,7 +104,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public AuthenticationResponse login(LoginRequest loginRequest) {
+    public ResponseEntity<AuthenticationResponse> login(LoginRequest loginRequest) {
 
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
@@ -111,15 +113,24 @@ public class AuthService {
             String authenticationToken = jwtService.generateToken(authentication);
             String refreshToken = refreshTokenService.generateRefreshToken(authentication.getName()).getToken();
 //            return new AuthenticationResponse(authenticationToken, getCurrentUser().getUsername());
-            return AuthenticationResponse.builder()
+            AuthenticationResponse response = AuthenticationResponse.builder()
                     .authenticationToken(authenticationToken)
                     .refreshToken(refreshToken)
                     .expirationDate(Instant.now().plusMillis(jwtService.getJwtExpirationInMillis()))
                     .username(getCurrentUser().getUsername())
                     .build();
+
+            return ResponseEntity.ok(response);
+
         } catch (Exception e) {
             logger.error("Error during login: {}", e.getMessage());
-            throw e; // Rethrow the exception to propagate it to the controller or handle it appropriately.
+            AuthenticationResponse errorResponse = AuthenticationResponse.builder()
+                    .username("Login failed. Please check your credentials and try again.")
+                    .build();
+
+            System.out.print(errorResponse);
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
         }
     }
 

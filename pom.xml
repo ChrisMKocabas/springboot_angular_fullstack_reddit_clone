@@ -14,7 +14,7 @@
 	<name>redditclone</name>
 	<description>A full stack reddit clone built using Spring Boot, Angular and Serverless MySQL</description>
 	<properties>
-		<java.version>20</java.version>
+		<java.version>17</java.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 	</properties>
 	<dependencies>

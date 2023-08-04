@@ -13,7 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
-                .allowedOriginPatterns("*")
+                .allowedOriginPatterns("http://localhost:4200",
+                        "https://zealous-wave-027e5c910.3.azurestaticapps.net")
                 .allowedMethods("*")
                 .maxAge(3600L)
                 .allowedHeaders("*")
