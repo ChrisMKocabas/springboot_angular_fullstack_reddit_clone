@@ -2,7 +2,7 @@
 
 ### Hosted at : https://zealous-wave-027e5c910.3.azurestaticapps.net
 
-<img width="1715" alt="Screenshot 2023-08-05 at 11 40 36 PM" src="https://github.com/ChrisMKocabas/springboot_angular_fullstack_reddit_clone/assets/75855099/57f74b6a-106a-4654-bb2e-b5d1bc566e41">
+<img width="1721" alt="Screenshot 2023-08-06 at 12 25 17 AM" src="https://github.com/ChrisMKocabas/springboot_angular_fullstack_reddit_clone/assets/75855099/885e8588-0ad8-452c-a5af-e9dc97b1e68d">
 
 #### For frontend code: https://github.com/ChrisMKocabas/springboot_angular_fullstack_reddit_clone_frontend
 
