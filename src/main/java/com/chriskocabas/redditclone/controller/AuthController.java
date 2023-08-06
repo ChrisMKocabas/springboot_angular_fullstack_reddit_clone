@@ -9,6 +9,7 @@ import com.chriskocabas.redditclone.repository.IUserRepository;
 import com.chriskocabas.redditclone.service.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -52,7 +53,12 @@ public class AuthController {
     @GetMapping("accountVerification/{token}")
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
         authService.verifyAccount(token);
-        return new ResponseEntity<>("Account Activated Successfully", HttpStatus.OK);
+
+        String frontendLoginUrl = "https://zealous-wave-027e5c910.3.azurestaticapps.net/#/login";
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", frontendLoginUrl);
+        headers.add("X-Redirection-Flag", "true");
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
     @PostMapping("/login")

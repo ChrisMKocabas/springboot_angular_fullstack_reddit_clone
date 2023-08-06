@@ -10,9 +10,10 @@ import org.thymeleaf.TemplateEngine;
 public class MailContentBuilder {
     private final TemplateEngine templateEngine;
 
-    String build(String message, String recipient) {
+    String build(String message, String username, String recipient) {
         Context context = new Context();
         context.setVariable("message", message);
+        context.setVariable("username", username);
         context.setVariable("recipient", recipient);
         return templateEngine.process("registrationConfirmationMailTemplate", context);
 

@@ -67,10 +67,10 @@ public class AuthService {
                 .build();
         userRepository.save(user);
         String token = generateVerificationToken(user);
-        mailService.sendMail(new NotificationEmail("Please activate your account",user.getEmail(),
+        mailService.sendMail(new NotificationEmail("Please activate your account",user.getEmail(),user.getUsername(),
                 "Thank you for signing up with our Reddit clone, " +
                 "please click the link below to activate your account: " +
-                "http://localhost:8080/api/v1/auth/accountVerification/" + token));
+                "https://reddit-backend-chris.onrender.com/api/v1/auth/accountVerification/" + token));
     }
 
     @Transactional

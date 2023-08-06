@@ -25,7 +25,7 @@ public class MailService {
             messageHelper.setFrom("redditapp@chriskocabas.com");
             messageHelper.setTo(notificationEmail.getRecipient());
             messageHelper.setSubject(notificationEmail.getSubject());
-            messageHelper.setText(mailContentBuilder.build(notificationEmail.getBody(), notificationEmail.getRecipient()), true);
+            messageHelper.setText(mailContentBuilder.build(notificationEmail.getBody(), notificationEmail.getUsername(), notificationEmail.getRecipient()), true);
         };
 
         try {

@@ -39,7 +39,7 @@ public class CommentService {
 
         Comment comment = commentMapper.map(commentsDto, post,user);
         commentRepository.save(comment);
-        String POST_URL = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/posts/"+commentsDto.getPostId()).toUriString();
+        String POST_URL = "https://zealous-wave-027e5c910.3.azurestaticapps.net/#/view-post/"+ commentsDto.getPostId();
         if (post.getNotificationStatus()) {
             String message = user.getUsername() +
                     " posted a response to your post. Click here to go to the post: " + POST_URL;
@@ -48,7 +48,7 @@ public class CommentService {
     }
 
     private void sendCommentNotification(String message, User threadstarter, User commenter) {
-        mailService.sendMail(new NotificationEmail(commenter.getUsername()+ " replied to your post", threadstarter.getEmail(), message));
+        mailService.sendMail(new NotificationEmail(commenter.getUsername()+ " replied to your post", threadstarter.getEmail(),threadstarter.getUsername(), message));
     }
     @Transactional
     public List<CommentsDto> getAllCommentsForPost(Long postId) {
